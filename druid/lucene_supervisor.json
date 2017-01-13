@@ -1,0 +1,73 @@
+```
+{
+  "type": "lucene_supervisor",
+  "dataSchema": {
+    "dataSource": "test",
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "url",
+        "timestampSpec": {
+          "column": "EventDateTime",
+          "format": "millis"
+        },
+        "dimensionsSpec": {
+          "dimensions": [
+            {
+              "name": "IP",
+              "type": "string"
+            },
+            {
+              "name": "Province",
+              "type": "string"
+            },
+            {
+              "name": "Value",
+              "type": "float"
+            },
+            {
+              "name": "age",
+              "type": "int"
+            },
+            {
+              "name": "length",
+              "type": "long"
+            },
+            {
+              "name": "time",
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm",
+              "timeZone": "+08:00"
+            }
+          ],
+          "dimensionExclusions": [],
+          "spatialDimensions": []
+        }
+      }
+    },
+    "metricsSpec": [],
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "NONE"
+    }
+  },
+  "tuningConfig": {
+    "type": "kafka",
+    "maxRowsInMemory": 500000,
+    "maxRowsPerSegment": 20000000,
+    "intermediatePersistPeriod": "PT10M",
+    "basePersistDirectory": "/opt/apps/druidio_sugo/var/tmp/taskStorage",
+    "buildV9Directly": true
+  },
+  "ioConfig": {
+    "topic": "test",
+    "consumerProperties": {
+      "bootstrap.servers": "192.168.0.217:9092,192.168.0.215:9092"
+    },
+    "taskCount": 1,
+    "replicas": 1,
+    "taskDuration": "P1D",
+    "useEarliestOffset": "true"
+  }
+}
