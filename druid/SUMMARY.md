@@ -6,4 +6,4 @@
 * [5.Broker配置说明](broker.md)  
 * [6.History配置说明](history.md)
 * [7.服务器配置建议](suggest.md)
-* [8.服务器配置建议](demo.md)
+* [8.demo](demo.md)
