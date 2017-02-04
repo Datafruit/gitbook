@@ -70,11 +70,11 @@ Druid在0.9.0之后提供了Supervisor的功能，对于挂掉的task可以重�
     },
     "taskCount": 2,                                  #启动的task数
     "replicas": 1,                                   #task的replicas数
-    "taskDuration": "P1D",                           #task执行的时间，一般情况根据数据情况可以设置为 P1D  p1H或P2H等
+    "taskDuration": "P1D",                           #task执行的时间，一般情况根据数据情况可以设置为 P1D  PT1H或PT2H等
     "useEarliestOffset": "true"                      #第一次消费是否从最早的位置开始消费
   }
 }
 
 ```
 curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/supervisor  
-即可启动supervisor，相应的任务可以在http://overlord:port 页面看到具体的执行和日志。
+即可启动supervisor，相应的任务可以在http://overlord:port 页面看到具体的执行和日志。关闭所有task：curl -X POST -H 'Content-Type: application/json' http://overlord:port/druid/indexer/v1/supervisor/数据源名/shutdown
