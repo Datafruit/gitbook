@@ -77,4 +77,5 @@ Druid在0.9.0之后提供了Supervisor的功能，对于挂掉的task可以重�
 
 ```
 curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/supervisor  
-即可启动supervisor，相应的任务可以在http://overlord:port 页面看到具体的执行和日志。关闭所有task：curl -X POST -H 'Content-Type: application/json' http://overlord:port/druid/indexer/v1/supervisor/数据源名/shutdown
+即可启动supervisor，相应的任务可以在http://overlord:port 页面看到具体的执行和日志。
+关闭所有task：curl -X POST -H 'Content-Type: application/json' http://overlord:port/druid/indexer/v1/supervisor/数据源名/shutdown
