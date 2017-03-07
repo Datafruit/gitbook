@@ -12,7 +12,7 @@ Supervisor目前只实现了kafka的对接，我们也扩展了Metaq，但还属
     "parser": {
       "type": "string",                              
       "parseSpec": {
-        "format": "url",                             #数据解析方式，url为我们扩展的解析，支持url解析，另外还支持json/csv/tsv/正则等
+        "format": "url",                             #数据解析方式，url为我们扩展的解析，支持url解析，另外还支持json/hive/csv/tsv/正则等
         "timestampSpec": {
           "column": "EventDateTime",                 #基于时序的存储，需要指定时间字段
           "format": "millis"                         #format为日期的格式，其中millis=毫秒数，posix=秒数，另外我们扩展了此处，可以指定所需的format和时区
@@ -87,50 +87,73 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 
 ```
 {
-  "type": "lucence_index_hadoop",
-  "spec": {
-    "dataSchema": {
-      "dataSource": "wikipedia",                          #数据源
-      "parser": {
-        "type": "string",
-        "parseSpec": {
-          "format": "json",                               #数据解析的方式
-          "timestampSpec": {
-            "column": "timestamp",
-            "format": "auto"
-          },
-          "dimensionsSpec": {
-            "dimensions": [
-              {"type": "string", "name":"page"}
-            ],
-            "dimensionExclusions": [],
-            "spatialDimensions": []
-          }
+    "type": "lucence_index_hadoop",
+    "spec": {
+        "dataSchema": {
+            "dataSource": "wikipedia",
+            "parser": {
+                "type": "string",
+                "parseSpec": {
+                    "format": "hive",
+                    "columns": [
+                        "app_ver",
+                        "umid",
+                        "imei",
+                        "sn",
+                        "ver",
+                        "stat_date"
+                    ],
+                    "multiColumns": [],
+                    "featureSpec": {},
+                    "mapColumns": [
+                        "misc_map"
+                    ],
+                    "mapSpecs": {},
+                    "timestampSpec": {
+                        "column": "event_tm",
+                        "format": "yyyyMMdd HH:mm:ss",
+                        "timeZone": "+08:00"
+                    },
+                    "dimensionsSpec": {
+                        "dynamicDimension": true,
+                        "dimensions": [
+                            {
+                                "name": "session_enter",
+                                "type": "long"
+                            },
+                            {
+                                "name": "session_exit",
+                                "type": "long"
+                            }
+                        ]
+                    }
+                }
+            },
+            "metricsSpec": [],
+            "granularitySpec": {
+                "type": "uniform",
+                "segmentGranularity": "DAY",
+                "queryGranularity": "NONE",
+                "intervals": [
+                    "2015-06-29/2015-06-30"
+                ]
+            }
+        },
+        "ioConfig": {
+            "type": "hadoop",
+            "inputSpec": {
+                "type": "static",
+                "paths": "/test/druid/201506wiki"
+            }
+        },
+        "tuningConfig": {
+            "type": "hadoop",
+            "partitionsSpec": {
+                "numShards": 1
+            }
         }
-      },
-      "metricsSpec": [],
-      "granularitySpec": {
-        "type": "uniform",
-        "segmentGranularity": "DAY",
-        "queryGranularity": "NONE",
-        "intervals": ["2015-06-29/2015-06-30"]
-      }
-    },
-    "ioConfig": {
-      "type": "hadoop",
-      "inputSpec": {
-        "type": "static",
-        "paths": "/test/druid/201506wiki"
-      }
-    },
-    "tuningConfig": {
-      "type": "hadoop",
-      "partitionsSpec": {
-        "numShards":1
-      }
     }
-  }
 }
 ```  
 启动task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task   
-关闭task：curl -X POST -H 'Content-Type: application/json' http://overlord:port/druid/indexer/v1/task/{taskid}/shutdown   
+关闭task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task/{taskid}/shutdown   
