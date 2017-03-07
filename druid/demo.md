@@ -1,8 +1,9 @@
-Supervisor例子
+数据接入例子
 =================================
 
-Druid在0.9.0之后提供了Supervisor的功能，对于挂掉的task可以重新拉起，目前其只实现了kafka的对接，我们也扩展了与metaq的对接。目前，我们支持kafka、metaq消息的不丢不重，且数据延迟也能正常接入。一个[Supervisor的定义](lucene_supervisor.json)：  
+## 1 Supervisor的方式［推荐］  
 
+Supervisor目前只实现了kafka的对接，我们也扩展了Metaq，但还属于试验特性。Supervisor的功能在于实现了对数据接入的监管，对于挂掉的task可以重新拉起，不用担心由于进程异常导致数据无法接入。目前，我们支持kafka消息的不丢不重，且数据延迟也能正常接入。一个[Supervisor的定义](lucene_supervisor.json)：  
 ```
 {
   "type": "lucene_supervisor",                       #`lucene_supervisor`为我们扩展的supervisor类型，
@@ -68,10 +69,10 @@ Druid在0.9.0之后提供了Supervisor的功能，对于挂掉的task可以重�
     "consumerProperties": {
       "bootstrap.servers": "192.168.0.217:9092,192.168.0.215:9092"     #kafka的broker位置
     },
-    "taskCount": 2,                                  #启动的task数
-    "replicas": 1,                                   #task的replicas数
-    "taskDuration": "P1D",                           #task执行的时间，一般情况根据数据情况可以设置为 P1D  PT1H或PT2H等
-    "useEarliestOffset": "true"                      #第一次消费是否从最早的位置开始消费
+    "taskCount": 2,                  #启动的task数
+    "replicas": 1,                   #task的replicas数
+    "taskDuration": "P1D",           #task执行的时间，一般情况根据数据情况可以设置为P1D PT1H或PT2H等，建议时间段内的数据在1-2kw
+    "useEarliestOffset": "true"      #第一次消费是否从最早的位置开始消费
   }
 }
 
@@ -79,3 +80,57 @@ Druid在0.9.0之后提供了Supervisor的功能，对于挂掉的task可以重�
 curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/supervisor  
 即可启动supervisor，相应的任务可以在http://overlord:port 页面看到具体的执行和日志。  
 关闭所有task：curl -X POST -H 'Content-Type: application/json' http://overlord:port/druid/indexer/v1/supervisor/数据源名/shutdown
+
+## 2 Hadoop Task的方式接入数据  
+
+以MR的方式生成索引数据，这种方式一般是为了接入hdfs文件的数据。一个例子：  
+
+```
+{
+  "type": "lucence_index_hadoop",
+  "spec": {
+    "dataSchema": {
+      "dataSource": "wikipedia",                          #数据源
+      "parser": {
+        "type": "string",
+        "parseSpec": {
+          "format": "json",                               #数据解析的方式
+          "timestampSpec": {
+            "column": "timestamp",
+            "format": "auto"
+          },
+          "dimensionsSpec": {
+            "dimensions": [
+              {"type": "string", "name":"page"}
+            ],
+            "dimensionExclusions": [],
+            "spatialDimensions": []
+          }
+        }
+      },
+      "metricsSpec": [],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "DAY",
+        "queryGranularity": "NONE",
+        "intervals": ["2015-06-29/2015-06-30"]
+      }
+    },
+    "ioConfig": {
+      "type": "hadoop",
+      "inputSpec": {
+        "type": "static",
+        "paths": "/test/druid/201506wiki"
+      }
+    },
+    "tuningConfig": {
+      "type": "hadoop",
+      "partitionsSpec": {
+        "numShards":1
+      }
+    }
+  }
+}
+```  
+启动task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task   
+关闭task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task/{taskid}/shutdown   
