@@ -133,4 +133,4 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 }
 ```  
 启动task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task   
-关闭task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task/{taskid}/shutdown   
+关闭task：curl -X POST -H 'Content-Type: application/json' http://overlord:port/druid/indexer/v1/task/{taskid}/shutdown   
