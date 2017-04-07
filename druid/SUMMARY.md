@@ -1,5 +1,5 @@
-* [1.Druid介绍](README.md)
-* [2.Druid通用配置说明](common.md)
+* [1.Tindex介绍](README.md)
+* [2.通用配置说明](common.md)
 * [3.Overlord配置说明](overlord.md)  
 * [4.Coordinator配置说明](coordinator.md)
 * [5.Middlemanager配置说明](middlemanager.md)  
