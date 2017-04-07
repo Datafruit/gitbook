@@ -8,11 +8,11 @@ RestAPI使用说明
 所有的数据都是由Coordinator节点管理，所以所有与数据相关的管理请求都发送到该节点。  
 
 * 查看所有的数据源  
-curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources    
+curl `http://CoordinatorIP:8081/druid/coordinator/v1/datasources`   
 * 查看指定数据源信息  
-curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}  
+curl `http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}`  
 * 屏蔽数据源  
-curl -X DELETE -H 'Content-Type: application/json' http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}   
+curl -X DELETE -H 'Content-Type: application/json' `http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}`   
 * 恢复数据源  
 curl -X POST -H 'Content-Type: application/json' http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}    
 * 查看数据源所有时间段
