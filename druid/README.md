@@ -1,10 +1,10 @@
 
-Druid介绍
+Tindex介绍
 ==========================================
 
-## Druid的概念   
+## Tindex的概念   
 
-Druid本来是一个开源的数据存储,为[OLAP](http://en.wikipedia.org/wiki/Online_analytical_processing)的事件查询而设计，
+Tindex的设计框架来源于Druid，Druid本身是一个开源的数据存储,为[OLAP](http://en.wikipedia.org/wiki/Online_analytical_processing)的事件查询而设计，
 有兴趣的朋友可以关注下广东数果对于druid的[翻译](http://druidio.cn)。
 我们目前基于lucene，剔除lucene的词向量、行正向等非必要的信息，并做了多处优化，重新设计了一套Druid的索引，在保证其原有的查询功能的前提下，主要改动涉及以下方面：  
 

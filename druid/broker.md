@@ -1,7 +1,7 @@
 Broker配置说明
 ==============================
 
-Broker为Druid的查询节点，通过zookeeper监听得到每个数据段所在的history节点或者实时task，当有查询请求时，Broker节点会将查询分发到具体的history和实时task查询，然后汇总查询返回的结果。  
+Broker为查询节点，通过zookeeper监听得到每个数据段所在的history节点或者实时task，当有查询请求时，Broker节点会将查询分发到具体的history和实时task查询，然后汇总查询返回的结果。  
 
 Broker的配置文件包括两部分内容：jvm.config和runtime.properties。  
 
