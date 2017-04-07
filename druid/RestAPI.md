@@ -11,26 +11,37 @@ RestAPI使用说明
 
 * 查看所有的数据源  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources    
+
 * 查看指定数据源信息  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}  
+
 * 屏蔽数据源  
 curl -X DELETE -H 'Content-Type: application/json' http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}   
+
 * 恢复数据源  
 curl -X POST -H 'Content-Type: application/json' http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}    
+
 * 查看数据源所有时间段
 curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/intervals  
+
 * 查看指定时间段的数据段(interval的格式：2017-03-24T01:00:00.000Z_2017-03-24T02:00:00.000Z)  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/intervals/{interval}  
+
 * 查看指定时间段的数据段的服务视图(interval的格式：2017-03-24T01:00:00.000Z_2017-03-24T02:00:00.000Z)  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/intervals/{interval}/serverview    
+
 * 清理指定时间段的数据段(interval的格式：2017-03-24T01:00:00.000Z_2017-03-24T02:00:00.000Z)  
 curl -X DELETE -H 'Content-Type: application/json' http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/intervals/{interval}   
+
 * 查看数据源所有的数据段   
 curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/segments   
+
 * 查看数据源指定数据段信息  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/segments/{segmentId}  
+
 * 删除数据源指定数据段  
 curl -X DELETE -H 'Content-Type: application/json' http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/segments/{segmentId}  
+
 * 恢复数据源指定数据段   
 curl -X POST -H 'Content-Type: application/json' http://CoordinatorIP:8081/druid/coordinator/v1/datasources/{DatasourcName}/segments/{segmentId}   
 
@@ -63,19 +74,91 @@ rule.json可以定义json，具体的规则的格式可参考[druid社区Rule](h
 * 查看数据源Rule的修改历史记录  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/rules/{dataSourceName}/history  
 
+
+## 任务管理
+
+### Task相关的管理  
+
+* 关闭task Id指定的task    
+- curl -X curl -H 'Content-Type: application/json' -d {task Id} http://overlord IP:8090/druid/indexer/v1/task/{task Id}/shutdown   
+
+* 获取处于waiting状态的task信息  
+- curl http://overlord IP:8090/druid/indexer/v1/waitingTasks  
+
+* 获取处于pending状态的task信息  
+- curl http://overlord IP:8090/druid/indexer/v1/pendingTasks  
+
+* 获取处于running状态的task信息  
+- curl http://overlord IP:8090/druid/indexer/v1/runningTasks  
+
+* 获取已完成任务的task信息  
+- curl http://overlord IP:8090/druid/indexer/v1/completeTasks  
+
+* 获取指定task(task Id)运行日志信息  
+- curl http://overlord IP:8090/druid/indexer/v1//task/{taskid}/log  
+
+
+### Worker相关的管理  
+* 获取worker行为信息  
+- curl http://overlord IP:8090/druid/indexer/v1/worker    
+
+* 设置worker授权信息  
+- curl -X curl -H 'Content-Type: application/json' -d @workerBehaviorConfig.json -d "X-Druid-Author={配置信息}&X-Druid-Comment={配置信息}" http://overlord IP:8090/druid/indexer/v1/worker  
+
+* 获取worker历史信息  
+- curl http://overlord IP:8090/druid/indexer/v1/worker/history  
+
+* 获取worker运行信息  
+- curl http://overlord IP:8090/druid/indexer/v1/workers  
+
+### supervisor相关的管理  
+
+* 根据supervisorSpec.json配置信息创建supervisor服务  
+- curl -X curl -H 'Content-Type: application/json' -d @supervisorSpec.json http://overlord IP:8090/druid/indexer/v1/supervisor  
+```
+说明：  
+1、如果相同数据源的supervisor已经存在，则会导致正在运行的supervisor会通知其管理的所有任务终止读取并执行segment发布。
+2、推出正在执行的supervisor。
+3、使用Request请求体内的规范创建一个新的supervisor，它会接管处于发布状态的任务，已经创建新的任务从处于发布状态的任务的介绍offset处开始读取数据。
+```
+
+* 获取当前活跃的supervisor列表  
+- curl http://overlord IP:8090/druid/indexer/v1/supervisor  
+
+* 获取当前活跃的supervisor列表  
+- curl http://overlord IP:8090/druid/indexer/v1/supervisor/{supervisorId}  
+
+* 获取指定supervisorId的状态  
+- curl http://overlord IP:8090/druid/indexer/v1/supervisor/{supervisorId}/status  
+
+* 关闭supervisorId指定的supervisor，同时使其管理的所有任务终止读取，进入segment发布状态  
+- curl http://overlord IP:8090/druid/indexer/v1/supervisor/{supervisorId}/shutdown  
+
+* 查看所有supervisor的历史  
+- curl http://overlord IP:8090/druid/indexer/v1/supervisor/history  
+
+* 获取指定supervisor(supervisor Id)的历史  
+- curl http://overlord IP:8090/druid/indexer/v1/supervisor/{supervisor Id}/history    
+
+
 ## 节点信息  
 
 ### Coordinator  
+
 * 查看Coordinator的leader  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/leader  
+
 * 查看数据加载情况  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/loadstatus  
 `注意`  可以通过参数full查看各个数据源replicas的情况，例如：curl http://CoordinatorIP:8081/druid/coordinator/v1/loadstatus?full=true  
+
 * 查看正在加载或者删除的数据段  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/loadqueue  
-`注意`  可以通过参数full查看所有的明细, 例如：可以通过参数full查看各个数据源replicas的情况，例如：curl http://CoordinatorIP:8081/druid/coordinator/v1/loadqueue?full=true   
+`注意`  可以通过参数full查看所有的明细, 例如：可以通过参数full查看各个数据源replicas的情况，例如：curl http://CoordinatorIP:8081/druid/coordinator/v1/loadqueue?full=true  
+
 * 查看Coordinator动态配置的参数  
 curl http://CoordinatorIP:8081/druid/coordinator/v1/config  
+
 * 设置Coordinator动态配置的参数  
 curl -X POST -H 'Content-Type: application/json' -d @config.json http://CoordinatorIP:8081/druid/coordinator/v1/config  
 config.json可以配置为：
@@ -93,4 +176,11 @@ emitBalancingStats  是否统计balance的情况，一般建议关闭
 killDataSourceWhitelist  不需要的datasource白名单，但task需要落地白名单中的datasource时，如果`druid.coordinator.kill.on`为true，则会停止这些task
 ```  
 
+### Overlord  
 
+* 查看Overlord的leader  
+curl http://overlordIP:8090/druid/indexer/v1/leader  
+
+## 查询API  
+
+待完善
