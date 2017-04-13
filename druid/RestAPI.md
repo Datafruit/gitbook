@@ -80,7 +80,7 @@ curl http://CoordinatorIP:8081/druid/coordinator/v1/rules/{dataSourceName}/histo
 ### Task相关的管理  
 
 * 关闭task Id指定的task    
-- curl -X curl -H 'Content-Type: application/json' -d {task Id} http://overlord IP:8090/druid/indexer/v1/task/{task Id}/shutdown   
+- curl -X 'POST' -H 'Content-Type: application/json' http://overlord IP:8090/druid/indexer/v1/task/{task Id}/shutdown   
 
 * 获取处于waiting状态的task信息  
 - curl http://overlord IP:8090/druid/indexer/v1/waitingTasks  
