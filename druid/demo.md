@@ -87,7 +87,7 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 
 ```
 {
-    "type": "lucence_index_hadoop",
+    "type": "lucene_index_hadoop",
     "spec": {
         "dataSchema": {
             "dataSource": "wikipedia",
@@ -143,7 +143,7 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
             "type": "hadoop",
             "inputSpec": {
                 "type": "static",
-                "paths": "/test/druid/201506wiki"
+                "paths": "/test/druid/201506wiki"   #hdfs路径
             }
         },
         "tuningConfig": {
