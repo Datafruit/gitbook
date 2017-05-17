@@ -135,7 +135,7 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
                 "segmentGranularity": "DAY",
                 "queryGranularity": "NONE",
                 "intervals": [
-                    "2015-06-29/2015-06-30"
+                    "2015-06-29/2015-06-30"    #需要对应数据时间
                 ]
             }
         },
@@ -149,8 +149,12 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
         "tuningConfig": {
             "type": "hadoop",
             "partitionsSpec": {
-                "numShards": 1
-            }
+                "numShards": 1         #可以根据实际数据时间情况灵活调整，一般一个时间段的一个partitionShard的数据不超过3千万
+            },
+            "jobProperties": {
+               "mapreduce.job.classloader": "true",
+               "mapreduce.job.classloader.system.classes": "-javax.validation.,java.,javax.,org.apache.commons.logging.,org.apache.log4j.,org.apache.hadoop."
+           }
         }
     }
 }
