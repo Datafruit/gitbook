@@ -162,6 +162,15 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 启动task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task   
 关闭task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task/{taskid}/shutdown   
 
+`注意：`当hadoop版本>2.6时，可以使用上面的jobProperties，否则建议使用下面的jobProperties  
+
+```
+"jobProperties": {
+    "mapreduce.job.user.classpath.first": "true",
+    "mapreduce.job.classloader.system.classes": "-javax.validation.,java.,javax.,org.apache.commons.logging.,org.apache.log4j.,org.apache.hadoop."
+}
+```  
+
 segment合并例子
 =================================
 
