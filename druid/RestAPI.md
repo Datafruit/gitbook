@@ -105,6 +105,15 @@ curl http://CoordinatorIP:8081/druid/coordinator/v1/rules/{dataSourceName}/histo
 * 设置worker授权信息  
 - curl -X curl -H 'Content-Type: application/json' -d @workerBehaviorConfig.json -d "X-Druid-Author={配置信息}&X-Druid-Comment={配置信息}" http://overlord IP:8090/druid/indexer/v1/worker  
 
+```
+公平调用Middlemanager资源的workerBehaviorConfig.json格式为：
+{
+	"selectStrategy": {
+	   "type":"equalDistribution"
+	 }
+}
+```
+
 * 获取worker历史信息  
 - curl http://overlord IP:8090/druid/indexer/v1/worker/history  
 
