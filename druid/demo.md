@@ -162,7 +162,7 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 启动task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task   
 关闭task：curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://overlord:port/druid/indexer/v1/task/{taskid}/shutdown   
 
-`注意：`当hadoop版本>2.6时，可以使用上面的jobProperties，否则建议使用下面的jobProperties  
+`注意：`当hadoop版本>2.6时，可以使用上面的jobProperties，否则建议使用下面的jobProperties，当然jobProperties内的参数一样可以通过修改Middlemanager下的runtime.properties文件，例如`druid.indexer.runner.javaOpts=.......  -Dhadoop.mapreduce.job.classloader=true`
 
 ```
 "jobProperties": {
