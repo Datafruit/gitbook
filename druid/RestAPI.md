@@ -137,6 +137,9 @@ curl http://CoordinatorIP:8081/druid/coordinator/v1/rules/{dataSourceName}/histo
 * 获取当前活跃的supervisor列表  
 - curl http://overlord IP:8090/druid/indexer/v1/supervisor/{supervisorId}  
 
+* 重置消费位置  
+- curl -X 'POST' http://overlord IP:8090/druid/indexer/v1/supervisor/{supervisorId}/reset   
+
 * 获取指定supervisorId的状态  
 - curl http://overlord IP:8090/druid/indexer/v1/supervisor/{supervisorId}/status  
 
